@@ -94,4 +94,4 @@ def merge_lines(df):
     # Optionally, drop the 'Merged' column if no longer needed
     df = df.drop(columns=['Merged'])
 
-    return df, action_merge
+    return df

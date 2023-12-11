@@ -43,4 +43,4 @@ def split_lines(lines):
 
     # Concatenate new rows and replace the original DataFrame
     new_df = pd.concat(new_rows, axis=1).transpose()
-    return new_df, action_split
+    return new_df

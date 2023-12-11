@@ -54,4 +54,4 @@ def extend(lines):
                 lines.at[idx, 'end_x'], lines.at[idx, 'end_y'] = new_xend, new_yend
                 action_extend = True
 
-    return lines, action_extend
+    return lines
