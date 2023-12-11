@@ -35,7 +35,6 @@ def find_rectangles(df):
                    (row['end_x'], row['end_y']) == (row_compare['start_x'], row_compare['start_y']) or \
                    (row['end_x'], row['end_y']) == (row_compare['end_x'], row_compare['end_y']):
                     df.at[index, 'Related lines'].append(index_compare)
-    print(df)
 
     rectangles = []
     for index, row in df.iterrows():
@@ -72,5 +71,4 @@ def find_rectangles(df):
         #plot_rect(df, rectangle)
         df.loc[rectangle, 'In rect'] = True
 
-    print(rectangles)
     return rectangle_new, df
