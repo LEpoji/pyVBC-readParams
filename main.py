@@ -12,8 +12,6 @@ import pandas as pd
 
 def process_dxf(file_path):
     lines, opening_lines = read_dwg(file_path)
-    print(lines)
-
     lines, opening_lines = align(lines, opening_lines, grid=100)
 
     #Initialize a variable to track changes in the dataframe
@@ -39,9 +37,6 @@ def process_dxf(file_path):
 
 
     rectangles, lines = find_rectangles.find_rectangles(lines)
-    print(lines)
-    no_rect_df = lines[lines['In rect'] == False]
-    print(no_rect_df)
 
     # Generate CSV file name based on DXF file name
     csv_file_name = os.path.splitext(os.path.basename(file_path))[0] + '.csv'
@@ -76,7 +71,6 @@ csv_files = sorted([f for f in os.listdir() if f.endswith('.csv')])
 # Initialize list to store DataFrames
 dfs = []
 combined_data = pd.DataFrame(columns=['name', 'module_width', 'module_length', 'module_height', 'xg', 'yg', 'zg', 'rot', 'n'])
-print(combined_data)
 
 for file in csv_files:
     temp_df = pd.read_csv(file)
