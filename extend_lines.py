@@ -1,12 +1,14 @@
 def extend(lines):
     action_extend = False
-    print(lines)
+    #Initialize empty string value for Direction column
+    lines['Direction'] = 'A'
     
     # Identify the direction of each line
     for idx, line in lines.iterrows():
         xstart, ystart, xend, yend = line['start_x'], line['start_y'], line['end_x'], line['end_y']
 
-        if abs(xstart - xend) < 50:  # Vertical line
+
+        if abs(xstart - xend) < 50:  # Vertical linea
             lines.at[idx, 'Direction'] = 'V'
         else:  # Horizontal line
             lines.at[idx, 'Direction'] = 'H'
