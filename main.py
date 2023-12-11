@@ -11,27 +11,33 @@ import glob
 import pandas as pd
 
 def process_dxf(file_path):
-    print(f'Reading dxf: {file_path}...')
     lines, opening_lines = read_dwg(file_path)
-    print(lines.shape[0])
-    print('Aligning to grid...')
+    print(lines)
+
     lines, opening_lines = align(lines, opening_lines, grid=100)
-    print(lines.shape[0])
-    print('Extending lines...')
-    lines = extend(lines)
-    lines = extend(lines)
-    print(lines.shape[0])
-    print('Merging lines...')
-    lines = merge_lines(lines)
-    print(lines.shape[0])
-    lines = merge_lines(lines)
-    lines = merge_lines(lines)
-    print(lines.shape[0])
-    print('Splitting lines...')
-    #lines = split_lines(lines)
-    print(lines.shape[0])
-    lines = lines.drop_duplicates(subset=['start_x', 'start_y', 'end_x', 'end_y'])
-    lines = lines.reset_index(drop=True)
+
+    #Initialize a variable to track changes in the dataframe
+    df_changed = True
+
+    while df_changed:
+        # Make a copy of the dataframe to compare after manipulations
+        lines_before = lines.copy()
+
+        # Perform your geometric manipulations
+        lines = extend(lines)
+        lines = merge_lines(lines)
+        #lines = split_lines(lines)
+        lines = lines.drop_duplicates(subset=['start_x', 'start_y', 'end_x', 'end_y'])
+        lines = lines.reset_index(drop=True)
+
+        # Compare the dataframe before and after manipulations
+        if lines.equals(lines_before):
+            df_changed = False
+            print('No change, end the loop')
+        else:
+            print('Changed data, restart the loop')
+
+
     rectangles, lines = find_rectangles.find_rectangles(lines)
     print(lines)
     no_rect_df = lines[lines['In rect'] == False]
@@ -42,6 +48,8 @@ def process_dxf(file_path):
     write_csv(rectangles, lines, csv_file_name)
 
 def process_all_dxf_in_folder(folder_path):
+
+
     # List all DXF files in the given folder
     dxf_files = glob.glob(os.path.join(folder_path, '*.dxf'))
 
@@ -51,6 +59,15 @@ def process_all_dxf_in_folder(folder_path):
 
 # Specify the folder containing DXF files
 folder_path = 'K:/Projekt/VBC/2023-01-18 Configurator structural calcs MODULES/02 Underlag/Clean dxf'
+
+# Delete all CSV files in the current directory
+csv_files_to_delete = glob.glob('*.csv')
+for file in csv_files_to_delete:
+    os.remove(file)
+
+# Rest of your script...
+
+
 process_all_dxf_in_folder(folder_path)
 
 # List and sort CSV files
@@ -90,6 +107,3 @@ for idx, row in combined_data.iterrows():
     module_counter = module_counter + 1
 
 combined_data.to_csv('combined.csv', index=False, sep='\t', header=False)
-first_floor_file_path = 'K:/Projekt/VBC/2023-01-18 Configurator structural calcs MODULES/02 Underlag/Clean dxf/1.dxf'
-_, opening_lines = read_dwg(first_floor_file_path)
-add_opening('combined.csv', opening_lines)
