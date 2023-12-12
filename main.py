@@ -6,13 +6,16 @@ import find_rectangles
 from merge_lines import merge_lines
 from split_lines import split_lines
 from write_csv import write_csv
+from append import openings
 import os
 import glob
 import pandas as pd
+from combine_csv import combine
+
 
 def process_dxf(file_path):
     lines, opening_lines = read_dwg(file_path)
-    lines, opening_lines = align(lines, opening_lines, grid=100)
+    lines, opening_lines = align(lines, opening_lines, grid=10)
 
     #Initialize a variable to track changes in the dataframe
     df_changed = True
@@ -42,6 +45,9 @@ def process_dxf(file_path):
     csv_file_name = os.path.splitext(os.path.basename(file_path))[0] + '.csv'
     write_csv(rectangles, lines, csv_file_name)
 
+    #Append openings
+    openings(csv_file_name, opening_lines)
+
 def process_all_dxf_in_folder(folder_path):
 
 
@@ -60,13 +66,12 @@ csv_files_to_delete = glob.glob('*.csv')
 for file in csv_files_to_delete:
     os.remove(file)
 
-# Rest of your script...
-
-
 process_all_dxf_in_folder(folder_path)
 
 # List and sort CSV files
 csv_files = sorted([f for f in os.listdir() if f.endswith('.csv')])
+
+combine(csv_files)
 
 # Initialize list to store DataFrames
 dfs = []
@@ -85,6 +90,7 @@ for file in csv_files:
                               (combined_data['yg'] == row['yg'])]
         
         if not match.empty:
+
             # Increment 'n' value for matching row
             combined_data.loc[match.index, 'n'] += 1
         else:
